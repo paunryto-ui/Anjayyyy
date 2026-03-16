@@ -3,7 +3,7 @@
 //   GH_CLIENT_ID     = Ov23liXUaVxgX2xDzjlO
 //   GH_CLIENT_SECRET = (dari GitHub Developer Settings → Generate secret)
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   const { code, state } = req.query;
 
   if (!code) {
