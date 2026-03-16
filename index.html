@@ -672,7 +672,7 @@ async function sendLog(type){
   const lst=cart.map((it,i)=>`${i+1}. **${it.name}** — Rp ${it.price.toLocaleString('id-ID')}`).join('\n');
   const map={process:{title:'🛒 ORDER IN PROCESS',color:0xFF3D9A,gif:GIF_PROC},success:{title:'✅ ORDER SUCCESS',color:0x39FF14,gif:GIF_OK},cancel:{title:'❌ ORDER DIBATALKAN',color:0xEF4444,gif:GIF_PROC},timeout:{title:'⏰ ORDER TIMEOUT',color:0xF59E0B,gif:GIF_PROC}};
   const s=map[type]||map.process;
-  try{await fetch(WH,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({embeds:[{title:s.title,color:s.color,thumbnail:{url:s.gif},fields:[{name:'👤 User',value:`**${user||'Anonymous'}**`,inline:true},{name:'💰 Total',value:`**Rp ${t.toLocaleString('id-ID')}**`,inline:true},{name:'🛍️ Item',value:lst||'—'},{name:'💳 Via',value:'Saweria · saweria.co/Brokolee',inline:true}],footer:{text:'Web Store · '+new Date().toLocaleString('id-ID')},timestamp:new Date().toISOString()}]})});}catch(e){}
+  try{await fetch(WH,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({embeds:[{title:s.title,color:s.color,image:{url:s.gif},fields:[{name:'👤 User',value:`**${user||'Anonymous'}**`,inline:true},{name:'💰 Total',value:`**Rp ${t.toLocaleString('id-ID')}**`,inline:true},{name:'🛍️ Item',value:lst||'—'},{name:'💳 Via',value:'Saweria · saweria.co/Brokolee',inline:true}],footer:{text:'Web Store · '+new Date().toLocaleString('id-ID')},timestamp:new Date().toISOString()}]})});}catch(e){}
 }
 
 document.getElementById('wlInput').addEventListener('keydown',e=>{if(e.key==='Enter')doLoginWelcome();});
