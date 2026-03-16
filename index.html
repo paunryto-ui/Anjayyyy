@@ -122,7 +122,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .timer-lbl{font-family:'Space Mono',monospace;font-size:1.35rem;color:var(--white);letter-spacing:4px;margin-bottom:.4rem}
 .timer-track{height:3px;background:rgba(255,255,255,.04);border-radius:999px;overflow:hidden}
 .timer-fill{height:100%;background:var(--pink);border-radius:999px;transition:width 1s linear,background .5s;box-shadow:0 0 8px var(--pink)}
-.btn-saweria{width:100%;background:var(--pink);border:none;padding:.9rem;color:var(--black);font-family:'Space Grotesk',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;transition:background .2s,box-shadow .2s;display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:.65rem}
+.btn-saweria{width:100%;background:var(--pink);border:none;padding:.9rem;color:var(--black);font-family:'Space Grotesk',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:2.5px;cursor:pointer;transition:background .2s,box-shadow .2s;display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:.65rem}
 .btn-saweria:hover{background:var(--pink-lt);box-shadow:0 0 32px var(--pink-glow)}
 .btn-confirm{width:100%;background:transparent;border:1px solid rgba(57,255,20,.32);padding:.85rem;color:rgba(57,255,20,.8);font-family:'Space Grotesk',sans-serif;font-size:.72rem;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;transition:all .2s}
 .btn-confirm:hover{background:rgba(57,255,20,.06);box-shadow:0 0 18px rgba(57,255,20,.1)}
@@ -322,10 +322,10 @@ footer span{font-family:'Space Mono',monospace;font-size:.57rem;color:#1a1a1a;le
     </div>
     <button class="btn-saweria" onclick="openSaweria()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path fill="currentColor" d="M18 8h-1V6c0-2.757-2.243-5-5-5S7 3.243 7 6v2H6c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2V10c0-1.103-.897-2-2-2zm-6 9c-1.084 0-2-.916-2-2s.916-2 2-2 2 .916 2 2-.916 2-2 2zm3-9H9V6c0-1.654 1.346-3 3-3s3 1.346 3 3v2z"/></svg>
-      <span>Bayar di Saweria — Nominal Otomatis</span>
+      <span>Bayar Di Saweria</span>
     </button>
     <button class="btn-confirm" onclick="confirmPay()">✅ Sudah Bayar — Konfirmasi</button>
-    <p class="p-sub">Klik "Bayar di Saweria" → nominal sudah terisi otomatis.<br>Setelah bayar, klik konfirmasi untuk notif ke admin.</p>
+    <p class="p-sub">Klik "Bayar Di Saweria" → nominal sudah terisi otomatis.<br>Setelah bayar, klik konfirmasi untuk notif ke admin.</p>
     <button class="btn-cncl" onclick="cancelPay()">Batal</button>
   </div>
 </div>
@@ -461,8 +461,9 @@ footer span{font-family:'Space Mono',monospace;font-size:.57rem;color:#1a1a1a;le
 const GH_ID    = "Ov23liXUaVxgX2xDzjlO";
 const WH       = "https://discord.com/api/webhooks/1483027407467319348/U0y1kUNZa8TBvwviltavZIAd50TQg0rR4F5vfXA3ephRf8mc26Fwd08aWLfMghTZwrgo";
 const SAWERIA  = "https://saweria.co/Brokolee";
-const GIF_PROC = "https://cdn.discordapp.com/attachments/1477851080988557438/1483037637991465080/Proyek_Baru_27_ED535A3_1.gif";
-const GIF_OK   = "https://cdn.discordapp.com/attachments/1477851080988557438/1483037637681090601/Proyek_Baru_27_B95C3C8.gif";
+const GIF_PROC   = "https://cdn.discordapp.com/attachments/1477851080988557438/1483037637991465080/Proyek_Baru_27_ED535A3_1.gif";
+const GIF_OK     = "https://cdn.discordapp.com/attachments/1477851080988557438/1483037637681090601/Proyek_Baru_27_B95C3C8.gif";
+const GIF_CANCEL = "https://cdn.discordapp.com/attachments/1480015985825284137/1483064909011882045/WhatsApp_Video_2026-03-16_at_18.29.55.gif";
 
 /* ─── STATE ─── */
 let cart = JSON.parse(localStorage.getItem('ws_cart')||'[]');
@@ -652,8 +653,18 @@ function updateTimerUI(s){
   if(lbl)lbl.textContent=m+':'+ss;
   if(fill){fill.style.width=(s/60*100)+'%';fill.style.background=s<=15?'#ef4444':s<=30?'#f59e0b':'var(--pink)';fill.style.boxShadow=s<=15?'0 0 8px #ef4444':'0 0 8px var(--pink)';}
 }
-function timerExpired(){document.getElementById('payOverlay').classList.add('hidden');sendLog('timeout');toast('⏰ Waktu habis! Silakan ulangi.',4000);}
-function cancelPay(){clearInterval(payTimer);document.getElementById('payOverlay').classList.add('hidden');sendLog('cancel');}
+function timerExpired(){
+  document.getElementById('orderGif').src=GIF_CANCEL+'?t='+Date.now();
+  sendLog('timeout');
+  toast('⏰ Waktu habis! Silakan ulangi.',4000);
+  setTimeout(()=>document.getElementById('payOverlay').classList.add('hidden'),2500);
+}
+function cancelPay(){
+  clearInterval(payTimer);
+  document.getElementById('orderGif').src=GIF_CANCEL+'?t='+Date.now();
+  sendLog('cancel');
+  setTimeout(()=>document.getElementById('payOverlay').classList.add('hidden'),2000);
+}
 async function confirmPay(){
   clearInterval(payTimer);
   document.getElementById('orderGif').src=GIF_OK+'?t='+Date.now();
@@ -670,7 +681,7 @@ async function confirmPay(){
 async function sendLog(type){
   const t=cart.reduce((s,i)=>s+i.price,0);
   const lst=cart.map((it,i)=>`${i+1}. **${it.name}** — Rp ${it.price.toLocaleString('id-ID')}`).join('\n');
-  const map={process:{title:'🛒 ORDER IN PROCESS',color:0xFF3D9A,gif:GIF_PROC},success:{title:'✅ ORDER SUCCESS',color:0x39FF14,gif:GIF_OK},cancel:{title:'❌ ORDER DIBATALKAN',color:0xEF4444,gif:GIF_PROC},timeout:{title:'⏰ ORDER TIMEOUT',color:0xF59E0B,gif:GIF_PROC}};
+  const map={process:{title:'🛒 ORDER IN PROCESS',color:0xFF3D9A,gif:GIF_PROC},success:{title:'✅ ORDER SUCCESS',color:0x39FF14,gif:GIF_OK},cancel:{title:'❌ ORDER DIBATALKAN',color:0xEF4444,gif:GIF_CANCEL},timeout:{title:'⏰ ORDER TIMEOUT',color:0xF59E0B,gif:GIF_CANCEL}};
   const s=map[type]||map.process;
   try{await fetch(WH,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({embeds:[{title:s.title,color:s.color,image:{url:s.gif},fields:[{name:'👤 User',value:`**${user||'Anonymous'}**`,inline:true},{name:'💰 Total',value:`**Rp ${t.toLocaleString('id-ID')}**`,inline:true},{name:'🛍️ Item',value:lst||'—'},{name:'💳 Via',value:'Saweria · saweria.co/Brokolee',inline:true}],footer:{text:'Web Store · '+new Date().toLocaleString('id-ID')},timestamp:new Date().toISOString()}]})});}catch(e){}
 }
